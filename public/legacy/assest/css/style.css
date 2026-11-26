@@ -215,3 +215,23 @@ header h1{margin-top:2px}
 .tmr.low{background:linear-gradient(135deg,#b91c1c,#ef4444);animation:tmrP .7s ease-in-out infinite}
 @keyframes tmrP{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
 @media (prefers-reduced-motion:reduce){.tmr.low{animation:none}}
+
+/* Interactive lamp login skin */
+.lamp-login{--lamp-glow:#ffc45c;--lamp-rgb:255,196,92;position:relative;isolation:isolate;padding:18px 0 6px;text-align:center}
+.lamp-stage{height:180px;position:relative;display:flex;justify-content:center;align-items:center;direction:ltr}
+.lamp-glow{position:absolute;inset:0;margin:auto;width:min(90%,430px);height:170px;background:radial-gradient(ellipse,rgba(var(--lamp-rgb),.25),transparent 68%);opacity:.42;transition:background 1.2s,opacity .7s}
+.lamp-illustration{position:relative;width:160px;height:170px;filter:drop-shadow(0 0 0 transparent);transition:filter .7s}
+.lamp-shade{position:absolute;top:22px;left:34px;width:92px;height:62px;border-radius:10px 10px 4px 4px;background:linear-gradient(145deg,#354254,#101a28 55%,#050a12);clip-path:polygon(20% 0,80% 0,100% 100%,0 100%);transition:background .8s,box-shadow .8s}
+.lamp-bulb{position:absolute;top:77px;left:68px;width:25px;height:17px;border-radius:50%;background:#263342;transition:all .7s}
+.lamp-stem{position:absolute;top:91px;left:75px;width:10px;height:55px;border-radius:8px;background:linear-gradient(90deg,#536174,#172334,#718096)}
+.lamp-foot{position:absolute;bottom:5px;left:36px;width:88px;height:21px;border-radius:50%;background:linear-gradient(#526176,#172334 55%,#080e18)}
+.lamp-cord{position:absolute;z-index:3;top:61px;left:111px;width:34px;height:76px;border:0;background:transparent;cursor:ns-resize;touch-action:none;padding:0;transform:translateY(var(--pull,0px))}
+.lamp-cord:before{content:"";position:absolute;top:0;left:16px;width:2px;height:57px;background:#d5bd8c}
+.lamp-cord span{position:absolute;top:54px;left:9px;width:16px;height:23px;border-radius:8px 8px 5px 5px;background:linear-gradient(90deg,#8a7045,#f4d69a,#8a7045)}
+.lamp-pull-text{font-size:clamp(22px,5vw,30px);font-weight:800;color:var(--lamp-glow);text-shadow:0 0 18px rgba(var(--lamp-rgb),.25);margin:-3px 0 16px;transition:color 1s}
+.lamp-on .lamp-illustration{filter:drop-shadow(0 0 23px rgba(var(--lamp-rgb),.65))}
+.lamp-on .lamp-shade{background:linear-gradient(145deg,#fff0bd,var(--lamp-glow) 55%,#6c461c);box-shadow:0 0 30px rgba(var(--lamp-rgb),.65),inset 0 0 18px #fff9}
+.lamp-on .lamp-bulb{background:#fff4c8;box-shadow:0 0 20px 12px rgba(var(--lamp-rgb),.8)}
+.lamp-on .lamp-glow{opacity:1}
+#app .welcome{color:var(--lamp-glow,#52e6a5);font-weight:700}
+@media(max-width:600px){.lamp-stage{height:160px}.lamp-illustration{transform:scale(.9)}.lamp-pull-text{font-size:26px}}
