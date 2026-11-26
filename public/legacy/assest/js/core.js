@@ -354,7 +354,7 @@ async function loadCloud(u,nm){
 const AERR={"auth/invalid-credential":"البريد أو كلمة السر غير صحيحة.","auth/wrong-password":"كلمة السر غير صحيحة.","auth/user-not-found":"لا يوجد حساب بهذا البريد.","auth/email-already-in-use":"هذا البريد مسجّل بالفعل، سجّل الدخول.","auth/weak-password":"كلمة السر ضعيفة (6 أحرف على الأقل).","auth/invalid-email":"صيغة البريد الإلكتروني غير صحيحة.","auth/network-request-failed":"لا يوجد اتصال بالإنترنت.","auth/too-many-requests":"محاولات كثيرة، انتظر قليلًا ثم أعد المحاولة.","auth/operation-not-allowed":"تسجيل الدخول بالبريد غير مفعّل في Firebase (Authentication ← Sign-in method).","auth/unauthorized-domain":"هذا الموقع غير مضاف في Authorized domains داخل Firebase.","auth/missing-password":"اكتب كلمة السر."};
 function authScreen(mode){
  const up=mode==="up";
- page(`<div class="lamp-login"><div class="lamp-stage"><div class="lamp-glow"></div><div class="lamp-illustration" aria-hidden="true"><div class="lamp-shade"></div><div class="lamp-bulb"></div><div class="lamp-stem"></div><div class="lamp-foot"></div><button type="button" class="lamp-cord" id="lampCord" aria-label="اسحب الحبل لتشغيل الإضاءة"><span></span></button></div><div class="lamp-pull-text">اسحب الحبل</div></div><h2>${up?"إنشاء حساب جديد":"تسجيل الدخول"}</h2><p class="welcome">أهلًا بكم في الفرقة الأولى</p>
+ page(`<h2>${up?"إنشاء حساب جديد":"تسجيل الدخول"}</h2><p class="welcome">أهلًا بكم في الفرقة الأولى</p>
  ${up?`<label for="an">الاسم</label><input type="text" id="an" placeholder="الاسم الكامل" autocomplete="name">`:""}
  <label for="ae">البريد الإلكتروني</label><input type="email" id="ae" dir="ltr" autocomplete="email" placeholder="name@example.com">
  <label for="ap">كلمة السر</label><input type="password" id="ap" dir="ltr" autocomplete="${up?"new-password":"current-password"}" placeholder="6 أحرف على الأقل">
@@ -364,17 +364,6 @@ function authScreen(mode){
  <button class="btn alt" id="sa" style="margin-top:8px">🎧 الدعم الفني</button>
  <button class="btn alt" id="mta" style="margin-top:8px">📚 بنك أسئلة ميد ترم</button>
  ${up?"":`<button class="back" id="af" style="margin-top:8px">نسيت كلمة السر؟</button>`}`);
- const lamp=document.querySelector(".lamp-login"),cord=document.getElementById("lampCord");
- let lampOn=false,cordDown=false,cordY=0,pull=0,suppressLampClick=false;
- const lampToggle=()=>{lampOn=!lampOn;lamp.classList.toggle("lamp-on",lampOn);cord.setAttribute("aria-label",lampOn?"اسحب الحبل لإطفاء الإضاءة":"اسحب الحبل لتشغيل الإضاءة")};
- cord.addEventListener("pointerdown",e=>{cordDown=true;cordY=e.clientY-pull;cord.setPointerCapture(e.pointerId);e.preventDefault()});
- window.addEventListener("pointermove",e=>{if(!cordDown)return;pull=Math.max(0,Math.min(75,e.clientY-cordY));cord.style.setProperty("--pull",pull+"px");if(pull>45){lampToggle();suppressLampClick=true;cordDown=false;pull=0;cord.style.setProperty("--pull","0px")}});
- window.addEventListener("pointerup",()=>{if(!cordDown)return;cordDown=false;if(pull>24){lampToggle();suppressLampClick=true}pull=0;cord.style.setProperty("--pull","0px")});
- cord.addEventListener("click",()=>{if(suppressLampClick){suppressLampClick=false;return}lampToggle()});
- const lampColors=["#ffc45c","#52e6a5","#ff5b91","#51cfff"];
- let lampColorIndex=0;
- const setLampColor=()=>{const color=lampColors[lampColorIndex++%lampColors.length];lamp.style.setProperty("--lamp-glow",color);lamp.style.setProperty("--lamp-rgb",color==="#ffc45c"?"255,196,92":color==="#52e6a5"?"82,230,165":color==="#ff5b91"?"255,91,145":"81,207,255")};
- setLampColor();const lampTimer=setInterval(()=>{if(!document.body.contains(lamp)){clearInterval(lampTimer);return}setLampColor()},2600);
  const am=document.getElementById("am"),E=()=>document.getElementById("ae").value.trim(),P=()=>document.getElementById("ap").value;
  const err=e=>{am.textContent=AERR[e&&e.code]||("حدث خطأ ("+((e&&e.code)||"غير معروف")+")");am.style.color="var(--bad)"};
  document.getElementById("as").onclick=()=>authScreen(up?"in":"up");
