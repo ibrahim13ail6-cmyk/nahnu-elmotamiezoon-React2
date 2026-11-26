@@ -354,16 +354,57 @@ async function loadCloud(u,nm){
 const AERR={"auth/invalid-credential":"البريد أو كلمة السر غير صحيحة.","auth/wrong-password":"كلمة السر غير صحيحة.","auth/user-not-found":"لا يوجد حساب بهذا البريد.","auth/email-already-in-use":"هذا البريد مسجّل بالفعل، سجّل الدخول.","auth/weak-password":"كلمة السر ضعيفة (6 أحرف على الأقل).","auth/invalid-email":"صيغة البريد الإلكتروني غير صحيحة.","auth/network-request-failed":"لا يوجد اتصال بالإنترنت.","auth/too-many-requests":"محاولات كثيرة، انتظر قليلًا ثم أعد المحاولة.","auth/operation-not-allowed":"تسجيل الدخول بالبريد غير مفعّل في Firebase (Authentication ← Sign-in method).","auth/unauthorized-domain":"هذا الموقع غير مضاف في Authorized domains داخل Firebase.","auth/missing-password":"اكتب كلمة السر."};
 function authScreen(mode){
  const up=mode==="up";
- page(`<h2>${up?"إنشاء حساب جديد":"تسجيل الدخول"}</h2><p class="welcome">أهلًا بكم في الفرقة الأولى</p>
- ${up?`<label for="an">الاسم</label><input type="text" id="an" placeholder="الاسم الكامل" autocomplete="name">`:""}
- <label for="ae">البريد الإلكتروني</label><input type="email" id="ae" dir="ltr" autocomplete="email" placeholder="name@example.com">
- <label for="ap">كلمة السر</label><input type="password" id="ap" dir="ltr" autocomplete="${up?"new-password":"current-password"}" placeholder="6 أحرف على الأقل">
- <button class="btn" id="ag">${up?"إنشاء الحساب":"دخول"}</button><div class="msg" id="am"></div>
- <button class="btn alt" id="as">${up?"عندي حساب – تسجيل الدخول":"إنشاء حساب جديد"}</button>
- <button class="btn alt" id="gd" style="margin-top:8px">📘 دليل الاستخدام</button>
- <button class="btn alt" id="sa" style="margin-top:8px">🎧 الدعم الفني</button>
- <button class="btn alt" id="mta" style="margin-top:8px">📚 بنك أسئلة ميد ترم</button>
- ${up?"":`<button class="back" id="af" style="margin-top:8px">نسيت كلمة السر؟</button>`}`);
+ app.innerHTML=`<div class="lg-scene" id="lgScene">
+  <section class="lg-lamp-side" aria-label="مصباح تفاعلي">
+   <div class="lg-beam"></div>
+   <div class="lg-wrap">
+    <div class="lg-head"><div class="lg-shade"></div><div class="lg-bulb"></div></div>
+    <div class="lg-neck"></div><div class="lg-joint"></div><div class="lg-base"></div>
+    <div class="lg-cord" id="lgCord" title="اسحب الحبل لأسفل لتشغيل المصباح"></div>
+    <div class="lg-hint" id="lgHint">اسحب الحبل لأسفل</div>
+   </div>
+   <div class="lg-palette"><span>لون الإضاءة</span>
+    <button class="lg-color" style="background:#ffc45c" data-rgb="255,196,92" aria-label="ذهبي"></button>
+    <button class="lg-color" style="background:#52e6a5" data-rgb="82,230,165" aria-label="أخضر"></button>
+    <button class="lg-color" style="background:#ff5b91" data-rgb="255,91,145" aria-label="وردي"></button>
+    <button class="lg-color" style="background:#51cfff" data-rgb="81,207,255" aria-label="أزرق"></button>
+   </div>
+  </section>
+  <section class="lg-form-side">
+   <div class="lg-card">
+    <div class="lg-eyebrow">منصة نحن المتميزون</div>
+    <h2>${up?"إنشاء حساب جديد":"تسجيل الدخول"}</h2>
+    <p class="lg-sub">أهلًا بكم في الفرقة الأولى</p>
+    ${up?`<label for="an">الاسم</label><input type="text" id="an" placeholder="الاسم الكامل" autocomplete="name">`:""}
+    <label for="ae">البريد الإلكتروني</label><input type="email" id="ae" dir="ltr" autocomplete="email" placeholder="name@example.com">
+    <label for="ap">كلمة السر</label>
+    <div class="lg-pass"><input type="password" id="ap" dir="ltr" autocomplete="${up?"new-password":"current-password"}" placeholder="6 أحرف على الأقل"><button type="button" class="lg-eye" id="lgEye" aria-label="إظهار كلمة السر">◉</button></div>
+    <button class="lg-submit" id="ag">${up?"إنشاء الحساب":"دخول إلى الحساب"}</button>
+    <div class="msg" id="am" aria-live="polite"></div>
+    <div class="lg-tools">
+     <button class="lg-alt" id="as">${up?"عندي حساب – تسجيل الدخول":"إنشاء حساب جديد"}</button>
+     <button class="lg-alt" id="gd">📘 دليل الاستخدام</button>
+     <button class="lg-alt" id="sa">🎧 الدعم الفني</button>
+     <button class="lg-alt" id="mta">📚 بنك أسئلة ميد ترم</button>
+    </div>
+    ${up?"":`<button class="lg-link" id="af">نسيت كلمة السر؟</button>`}
+   </div>
+  </section>
+ </div>`;
+
+ /* ===== تفاعل المصباح (شكل فقط، لا يؤثر على تسجيل الدخول) ===== */
+ const scene=document.getElementById("lgScene"),cord=document.getElementById("lgCord"),hint=document.getElementById("lgHint");
+ let isOn=false,drag=false,sy=0,pulled=0,toggledByDrag=false;
+ const setLamp=on=>{isOn=on;scene.classList.toggle("on",on);hint.textContent=on?"اسحب الحبل مرة أخرى للإطفاء":"اسحب الحبل لأسفل"};
+ cord.onpointerdown=e=>{drag=true;toggledByDrag=false;sy=e.clientY;cord.setPointerCapture?.(e.pointerId);e.preventDefault()};
+ cord.onpointermove=e=>{if(!drag)return;pulled=Math.max(0,Math.min(95,e.clientY-sy));cord.style.height=(100+pulled)+"px"};
+ const endDrag=()=>{if(!drag)return;drag=false;const pull=pulled>28;pulled=0;cord.style.height="";if(pull){toggledByDrag=true;setLamp(!isOn)}};
+ cord.onpointerup=endDrag;cord.onpointercancel=endDrag;
+ cord.onclick=()=>{if(toggledByDrag){toggledByDrag=false;return}setLamp(!isOn)};
+ scene.querySelectorAll(".lg-color").forEach(b=>b.onclick=()=>scene.style.setProperty("--lg-rgb",b.dataset.rgb));
+ document.getElementById("lgEye").onclick=()=>{const p=document.getElementById("ap");p.type=p.type==="password"?"text":"password"};
+
+ /* ===== منطق تسجيل الدخول الأصلي (بدون تغيير) ===== */
  const am=document.getElementById("am"),E=()=>document.getElementById("ae").value.trim(),P=()=>document.getElementById("ap").value;
  const err=e=>{am.textContent=AERR[e&&e.code]||("حدث خطأ ("+((e&&e.code)||"غير معروف")+")");am.style.color="var(--bad)"};
  document.getElementById("as").onclick=()=>authScreen(up?"in":"up");
