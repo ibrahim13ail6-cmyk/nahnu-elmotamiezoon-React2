@@ -1,5 +1,0 @@
-{
-  "redirects": [
-    { "source": "/", "destination": "/legacy/index.html", "permanent": false }
-  ]
-}
